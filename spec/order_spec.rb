@@ -4,7 +4,7 @@ describe Order do
   let(:order) { Order.new(menu) }
   let(:menu) { double :menu, menu: dishes, add_item: '', item_on_menu?: '' }
   let(:dishes) { { pizza: 3, drink: 4, pie: 5 } }
-  let(:printed_order) { "Current order:\n3 Drink\n4 Pizza\n" }
+  let(:printed_order) { "Current order:\n3xDrink\n4xPizza\n" }
   let(:dish) { :pizza }
 
   it "initialises with an empty order" do
@@ -45,6 +45,20 @@ describe Order do
     it "returns the order total" do
       order.add_to_basket('pizza', 4)
       expect(order.order_total).to eq 12
+    end
+  end
+
+  describe '#confirm_total' do
+    it { is_expected.to respond_to(:confirm_total).with(1).arguments }
+
+    it "raises error if passed incorrect total" do
+      order.add_to_basket('pizza', 4)
+      expect { order.confirm_total(10) }.to raise_error "Cannot complete order: Incorrect total"
+    end
+
+    it "returns true if passed correct value" do
+      order.add_to_basket('pizza', 4)
+      expect(order.confirm_total(12)).to eq true
     end
   end
 end

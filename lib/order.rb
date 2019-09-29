@@ -21,7 +21,7 @@ class Order
     current_order.each do |line|
       line.each do |k, v|
         k.to_s
-        puts "#{v} #{k.capitalize}"
+        puts "#{v}x#{k.capitalize}"
       end
     end
   end
@@ -30,7 +30,13 @@ class Order
     @total
   end
 
-  # private
+  def confirm_total(price)
+    raise 'Cannot complete order: Incorrect total' unless price == total
+
+    true
+  end
+
+  private
 
   def calculate_total(item, quantity)
     @total += menu.menu[item.to_sym] * quantity

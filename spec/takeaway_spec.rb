@@ -3,11 +3,12 @@ require "menu"
 require "order"
 
 describe Takeaway do
-  let(:takeaway) { Takeaway.new(menu: menu) }
-  let(:menu) { double :menu, menu: dishes, print_menu: printed_menu, add_item: '', item_on_menu?: ''}
+  let(:takeaway) { Takeaway.new(menu: menu, order: order) }
+  let(:menu) { double :menu, menu: dishes, print_menu: printed_menu, add_item: '', item_on_menu?: '' }
+  let(:order) { double :order, current_order: '', add_to_basket: '', confirm_total: true }
   let(:dishes) { { pizza: 3, drink: 4, pie: 5 } }
   let(:printed_menu) { "Menu: 1. Pizza, £3" }
-  let(:printed_order) { "Current order:\n3 Pizza\n"}
+  let(:printed_order) { "Current order:\n3xPizza\n" }
 
   it "initialises with a menu" do
     expect(takeaway.menu).to eq menu
@@ -32,22 +33,27 @@ describe Takeaway do
   end
 
   describe '#add_to_order' do
-
     it "lets you know that item was added to order with specified quantity" do
       item = 'pizza'
       quantity = 3
-      expect(takeaway.add_to_order(item, quantity)).to eq "#{quantity} #{item} added to order"
+      expect(takeaway.add_to_order(item, quantity)).to eq "#{quantity}x#{item} added to order"
     end
   end
-  describe '#view_order' do
+
+  describe "#checkout" do
     before do
       item = 'pizza'
       quantity = 3
       takeaway.add_to_order(item, quantity)
     end
 
-    it "shows the order" do
-      expect { takeaway.view_order }.to output(printed_order).to_stdout
+    it "raises error if passed incorrect price" do
+      allow(order).to receive(:confirm_total) { raise "Cannot complete order: Incorrect total" }
+      expect { takeaway.checkout(10) }.to raise_error "Cannot complete order: Incorrect total"
+    end
+
+    it "completes order if passed correct price" do
+      expect(takeaway.checkout(9)).to eq "Thank you your order has been placed, expect a text to confirm delivery time"
     end
   end
 end
