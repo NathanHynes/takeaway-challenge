@@ -2,13 +2,16 @@ require "takeaway"
 require "menu"
 
 describe Takeaway do
-  let(:takeaway) { Takeaway.new(menu) }
+  let(:takeaway) { Takeaway.new(menu: menu) }
   let(:menu) { double :menu, print_menu: printed_menu, add_item: '' }
   let(:printed_menu) { "Menu: 1. Pizza, £3" }
 
   it "initialises with a menu" do
     expect(takeaway.menu).to eq menu
+  end
 
+  it "initialises with an empty order" do
+    expect(takeaway.order.current_order).to be_empty    
   end
 
   describe '#view_menu' do
