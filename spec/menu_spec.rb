@@ -39,7 +39,7 @@ describe Menu do
     end
 
     it "returns true if item is added to menu" do
-      expect(menu.add_item(dish,price)).to eq true
+      expect(menu.add_item(dish, price)).to eq true
     end
   end
 end

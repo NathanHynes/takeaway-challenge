@@ -1,9 +1,8 @@
 require_relative 'takeaway'
 
 class Menu
-  attr_reader :menu, :file
-  def initialize(menu = 'menu')
-    @file = file
+  attr_reader :menu
+  def initialize(menu = { MARGHERITA: 3 })
     @menu = menu
     @sample_menu = {
       MARGHERITA: 3,

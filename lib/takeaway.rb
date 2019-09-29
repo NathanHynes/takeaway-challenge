@@ -1,9 +1,10 @@
 require_relative 'menu'
+require_relative 'order'
 
 class Takeaway
   attr_reader :menu, :order
 
-  def initialize(menu: Menu.new({ MARGHERITA: 3 }), order: Order.new)
+  def initialize(menu: Menu.new({ MARGHERITA: 3 }), order: Order.new(menu))
     @menu = menu
     @order = order
   end
@@ -15,5 +16,14 @@ class Takeaway
   def add_to_menu(item, price)
     menu.add_item(item, price)
     "#{item} was added to menu"
+  end
+
+  def add_to_order(item, quantity = 1)
+    order.add_to_basket(item, quantity)
+    "#{quantity} #{item} added to order"
+  end
+
+  def view_order
+    order.print_order
   end
 end
