@@ -1,14 +1,14 @@
 require "takeaway"
-require "menu"
-require "order"
 
 describe Takeaway do
-  let(:takeaway) { Takeaway.new(menu: menu, order: order) }
+  let(:takeaway) { Takeaway.new(menu: menu, order: order, messenger: messenger)}
   let(:menu) { double :menu, menu: dishes, print_menu: printed_menu, add_item: '', item_on_menu?: '' }
   let(:order) { double :order, current_order: '', add_to_basket: '', confirm_total: true }
   let(:dishes) { { pizza: 3, drink: 4, pie: 5 } }
   let(:printed_menu) { "Menu: 1. Pizza, £3" }
   let(:printed_order) { "Current order:\n3xPizza\n" }
+  let(:messenger) { double :Messenger, send_message: nil }
+
 
   it "initialises with a menu" do
     expect(takeaway.menu).to eq menu
@@ -36,7 +36,7 @@ describe Takeaway do
     it "lets you know that item was added to order with specified quantity" do
       item = 'pizza'
       quantity = 3
-      expect(takeaway.add_to_order(item, quantity)).to eq "#{quantity}x#{item} added to order"
+      expect(takeaway.add_to_order(item, quantity)).to eq "#{quantity}x #{item} added to order"
     end
   end
 
@@ -54,6 +54,13 @@ describe Takeaway do
 
     it "completes order if passed correct price" do
       expect(takeaway.checkout(9)).to eq "Thank you your order has been placed, expect a text to confirm delivery time"
+    end
+
+    it "sends a text" do
+      twilio_to = ENV['TWILIO_TO']
+      expected_time = Time.now + (60 * 60)
+      body = "Thank you, your order was placed and will be delivered before #{expected_time.strftime("%k:%M")}"
+      expect(messenger).to receive(:send_message).with(twilio_to, body)
     end
   end
 end

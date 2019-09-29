@@ -1,5 +1,3 @@
-require_relative 'takeaway'
-
 class Menu
   attr_reader :menu
   def initialize(menu = { MARGHERITA: 3 })
