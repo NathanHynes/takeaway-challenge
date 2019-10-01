@@ -36,6 +36,10 @@ class Order
     true
   end
 
+  def clear_order
+    @current_order = []
+  end
+
   private
 
   def calculate_total(item, quantity)

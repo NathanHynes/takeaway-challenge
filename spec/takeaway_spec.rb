@@ -3,11 +3,11 @@ require "takeaway"
 describe Takeaway do
   let(:takeaway) { Takeaway.new(menu: menu, order: order, messenger: messenger)}
   let(:menu) { double :menu, menu: dishes, print_menu: printed_menu, add_item: '', item_on_menu?: '' }
-  let(:order) { double :order, current_order: '', add_to_basket: '', confirm_total: true }
+  let(:order) { double :order, current_order: '', add_to_basket: '', confirm_total: true, clear_order: [] }
   let(:dishes) { { pizza: 3, drink: 4, pie: 5 } }
   let(:printed_menu) { "Menu: 1. Pizza, £3" }
   let(:printed_order) { "Current order:\n3xPizza\n" }
-  let(:messenger) { double :Messenger, send_message: nil }
+  let(:messenger) { double :messenger, send_message: "hello" }
 
 
   it "initialises with a menu" do

@@ -61,4 +61,13 @@ describe Order do
       expect(order.confirm_total(12)).to eq true
     end
   end
+
+  describe '#clear order' do
+
+    it "clears current order" do
+      order.add_to_basket('pizza', 4)
+      order.clear_order
+      expect(order.current_order).to be_empty
+    end
+  end
 end

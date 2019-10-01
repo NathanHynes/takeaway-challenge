@@ -31,6 +31,7 @@ class Takeaway
 
   def checkout(price)
     order.confirm_total(price)
+    order.clear_order
     expected_time = Time.now + (60 * 60)
     body = "Thank you, your order was placed and will be delivered before #{expected_time.strftime("%k:%M")}"
     to = ENV['TWILIO_FROM']

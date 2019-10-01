@@ -14,22 +14,13 @@ Takeaway Challenge
 
  ```
 
-Instructions
--------
+This weeks challenge was to create a program that would mimic a takeaway. The main tasks were allowing a user to:  
+* View a menu.
+* Add items to an order.
+* Check order total.
+* receive a text confirming delivery time.
 
-* Challenge time: rest of the day and weekend, until Monday 9am
-* Feel free to use google, your notes, books, etc. but work on your own
-* If you refer to the solution of another coach or student, please put a link to that in your README
-* If you have a partial solution, **still check in a partial solution**
-* You must submit a pull request to this repo with your code by 9am Monday morning
-
-Task
------
-
-* Fork this repo
-* Run the command 'bundle' in the project directory to ensure you have all the gems
-* Write a Takeaway program with the following user stories:
-
+## User Stories
 ```
 As a customer
 So that I can check if I want to order something
@@ -48,35 +39,71 @@ So that I am reassured that my order will be delivered on time
 I would like to receive a text such as "Thank you! Your order was placed and will be delivered before 18:52" after I have ordered
 ```
 
-* Hints on functionality to implement:
-  * Ensure you have a list of dishes with prices
-  * Place the order by giving the list of dishes, their quantities and a number that should be the exact total. If the sum is not correct the method should raise an error, otherwise the customer is sent a text saying that the order was placed successfully and that it will be delivered 1 hour from now, e.g. "Thank you! Your order was placed and will be delivered before 18:52".
-  * The text sending functionality should be implemented using Twilio API. You'll need to register for it. It’s free.
-  * Use the twilio-ruby gem to access the API
-  * Use the Gemfile to manage your gems
-  * Make sure that your Takeaway is thoroughly tested and that you use mocks and/or stubs, as necessary to not to send texts when your tests are run
-  * However, if your Takeaway is loaded into IRB and the order is placed, the text should actually be sent
-  * Note that you can only send texts in the same country as you have your account. I.e. if you have a UK account you can only send to UK numbers.
-
-* Advanced! (have a go if you're feeling adventurous):
-  * Implement the ability to place orders via text message.
-
-* A free account on Twilio will only allow you to send texts to "verified" numbers. Use your mobile phone number, don't worry about the customer's mobile phone.
-
-* **WARNING** think twice before you push your mobile number or any private details to a public space like Github. Now is a great time to think about security and how you can keep your private information secret. You might want to explore environment variables.
-
-* Finally submit a pull request before Monday at 9am with your solution or partial solution.  However much or little amount of code you wrote please please please submit a pull request before Monday at 9am
+## My Approach
 
 
-In code review we'll be hoping to see:
+Using the processes and techniques I learnt during the week, such as Polymorphism and Extracting classes, during the planning stage I decided that I would have classes dedicated to the following:
+* Orders
+* Menu
+* Messenger
+* Takeaway
 
-* All tests passing
-* High [Test coverage](https://github.com/makersacademy/course/blob/master/pills/test_coverage.md) (>95% is good)
-* The code is elegant: every class has a clear responsibility, methods are short etc.
+The Takeaway class is more of an 'interface' calling on the other tasks to carry out functions and is where the user interacts with all other classes.
 
-Reviewers will potentially be using this [code review rubric](docs/review.md).  Referring to this rubric in advance will make the challenge somewhat easier.  You should be the judge of how much challenge you want this weekend.
+I also wanted to make sure that class methods didn't have too many responsibilities and thus decided early on to follow SRP and calling on private methods to carry out additional functionality where needed.
 
-Notes on Test Coverage
-------------------
 
-You can see your [test coverage](https://github.com/makersacademy/course/blob/master/pills/test_coverage.md) when you run your tests.
+## How to use my program
+
+### Set up
+
+Before using the program you will need to sign up for an account on https://www.twilio.com/ in order to make use of the Messenger class to send texts to a customers phone.
+
+Once you have account I would recommend creating the following environment variables:
+
+* TWILIO_TO - A customer mobile number to recieve SMSs
+* TWILIO_FROM - A verified sending number from Twilio
+* TWILIO_SID - Twilio  account SID
+* TWILIO_TOKEN - Twilio authentication token.
+
+
+### Using the program
+
+To use the program you will need to fork this repo and run `bundle install` to install the required gems. Then type `require './lib/takeaway.rb'` in IRB.
+
+ before creating an instance of the Takeaway Class first create a list of dishes. You will then need to pass them in as an argument to an instance of a Menu class that the Takeaway class needs to initialise.
+
+```
+sample_menu = { MARGHERITA: 3, FUNGHI: 4, FIORENTINA: 5, FORMAGGI: 5, PEPPERONI: 6 }
+
+restaurant = Takeaway.new(menu:Menu(sample_menu))
+```
+This creates a new instance of the Takeaway class with a preloaded menu. During initialisation an instance of an Order class and Messenger class will also be created.
+
+To view the menu in a readable string you simply need to type the following:
+
+```
+restaurant.view_menu
+```
+
+Should you want to add to the menu `restaurant.add_to_menu('bread', 2)`. The arguments you pass should be the item you wish to add and the price.
+
+To add items to your order you will then need to type the following:
+
+```
+restaurant.add_to_order("FUNGHI", 3)
+```
+You will need to specify the item that you  want to be added to the order and also the quantity. If a quantity isn't passed this will be 1 by default. If the menu doesn't include the item an error message will be displayed.
+
+To view your order and have it printed to output simply type `restaurant.view_order`.
+
+Once you have completed your order checkout by typing `restaurant.checkout(20)`. The number you pass as an argument needs to be the total price of the order. If it isn't another error message will be displayed. This will complete the order and send you a text to confirm a delivery time.
+
+
+## Challenges
+
+This weekend challenge really helped me get to grip and overcome issues with RSPEC testing especially when it came to mocking and stubbing. I spent quite a lot of time researching this and ensuring I got it right. It also helped improve my testing and approach to planning.
+
+## Improvements to implement
+
+ One major improvement I would add to the program would be the ability to load a CSV file as a menu. Furthermore the takeaway class is a bit redundant as it is delegating quite a lot of its responsibilities. If I was to do this again I would consider combining the order and takeaway classes into one. 
